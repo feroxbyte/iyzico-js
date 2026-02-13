@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm lint
+
+      - name: Run tests with coverage
+        if: matrix.node-version == 22
+        run: pnpm test --coverage
+
+      - name: Run tests
+        if: matrix.node-version != 22
+        run: pnpm test
+
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 22
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage-final.json
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - run: pnpm build
+
+      - name: Check bundle size
+        if: matrix.node-version == 22
+        run: |
+          SIZE=$(wc -c < dist/index.mjs)
+          echo "Bundle size: ${SIZE} bytes ($(echo "scale=1; $SIZE / 1024" | bc)KB)"
+          if [ "$SIZE" -gt 102400 ]; then
+            echo "::error::Bundle size ${SIZE} bytes exceeds 100KB threshold"
+            exit 1
+          fi
+
+  pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
