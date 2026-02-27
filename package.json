@@ -1,6 +1,6 @@
 {
 	"name": "iyzico-js",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Modern, fully-typed TypeScript client for iyzico payment API — fetch-based, zero dependencies, works everywhere",
 	"type": "module",
 	"exports": {
