@@ -36,10 +36,10 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm test
 
+      - run: npm install -g npm@latest
       - run: npm publish --provenance --access public
