@@ -11,7 +11,7 @@ Modern, fully-typed TypeScript client for the [iyzico](https://www.iyzico.com/) 
 
 - **Zero dependencies** &mdash; only `fetch` + Web Crypto API
 - **Runs everywhere** &mdash; Node.js, Deno, Bun, Cloudflare Workers, edge runtimes
-- **ESM only** &mdash; tree-shakeable, no CommonJS baggage
+- **ESM + CJS** &mdash; tree-shakeable ESM with CommonJS fallback
 - **Fully typed** &mdash; complete TypeScript interfaces for every request and response
 
 > **Pre-v1:** The API surface may change before 1.0. TypeScript interfaces were built from iyzico's documentation and sandbox testing — some fields may be missing or mistyped against production responses. Bug reports are welcome.
